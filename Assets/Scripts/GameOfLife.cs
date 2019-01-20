@@ -2,6 +2,7 @@
 * Game of Life Implementation
 * @author Sinead Urisohn
 */
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -69,14 +70,26 @@ public class GameOfLife : MonoBehaviour
             }
             timer = 0;
         }
+        UpdateColors();
 	}
+
+    private void UpdateColors()
+    {
+        foreach (var cell in cells)
+        {
+            if(cell.GetCellState() == 1)
+                tileMap.SetColor(cell.GetCellPosition(), OnColors[colorPos]);
+            else
+                tileMap.SetColor(cell.GetCellPosition(), OffColors[colorPos]);
+        }
+    }
 
     private void PlayGameOfLife(Cell cell)
     {
         if(NumberOfNeighersInStateOne(cell) == 3)
         {
             cell.SetCellState(1);
-            tileMap.SetColor(cell.GetCellPosition(), OnColors[colorPos]);
+            //tileMap.SetColor(cell.GetCellPosition(), OnColors[colorPos]);
 
         }
         else if(cell.GetCellState() == 1 && NumberOfNeighersInStateOne(cell) == 2)
@@ -86,13 +99,13 @@ public class GameOfLife : MonoBehaviour
         else
         {
             cell.SetCellState(0);
-            tileMap.SetColor(cell.GetCellPosition(), OffColors[colorPos]);
+            //tileMap.SetColor(cell.GetCellPosition(), OffColors[colorPos]);
         }
     }
 
     private int GetRandomStartValue()
     {
-        return Random.Range(-40, 2);
+        return UnityEngine.Random.Range(-40, 2);
     }
 
     private int NumberOfNeighersInStateOne(Cell cell)
@@ -110,6 +123,6 @@ public class GameOfLife : MonoBehaviour
 
     private int GetRandomColorPair()
     {
-        return Random.Range(0, OffColors.Length);
+        return UnityEngine.Random.Range(0, OffColors.Length);
     }
 }
