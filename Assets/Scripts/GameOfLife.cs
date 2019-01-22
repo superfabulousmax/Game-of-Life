@@ -9,6 +9,7 @@ using UnityEngine.Tilemaps;
 
 public class GameOfLife : MonoBehaviour
 {
+    public static bool startSim = false;
     [SerializeField]
     private int gridSize = 8;
     [SerializeField]
@@ -17,11 +18,11 @@ public class GameOfLife : MonoBehaviour
     private Tilemap tileMap;
     private List<Cell> cells;
     private int xMin, yMin, xMax, yMax;
-    private Color[] OnColors = {Color.white, Color.green, Color.yellow, Color.cyan, Color.yellow};
-    private Color[] OffColors = {Color.black, Color.red, Color.black, Color.black, Color.red};
-    private int colorPos;
+    public static Color[] OnColors = {Color.white, Color.green, Color.yellow, Color.cyan, Color.yellow};
+    public static Color[] OffColors = {Color.black, Color.red, Color.black, Color.black, Color.red};
+    public static int colorPos;
 
-	void Start ()
+	void Awake ()
     {
         tileMap = transform.GetComponentInParent<Tilemap>();
         cells = new List<Cell>();
@@ -61,22 +62,27 @@ public class GameOfLife : MonoBehaviour
 	
 	void Update ()
     {
-        timer += Time.deltaTime;
-        if(timer >= timeStep)
+        if(startSim)
         {
-            foreach (var cell in cells)
+            timer += Time.deltaTime;
+            if (timer >= timeStep)
             {
-                PlayGameOfLife(cell);
+                foreach (var cell in cells)
+                {
+                    PlayGameOfLife(cell);
+                }
+                timer = 0;
             }
-            timer = 0;
+            UpdateColors();
         }
-        UpdateColors();
+        
 	}
 
     private void UpdateColors()
     {
         foreach (var cell in cells)
         {
+            cell.SetCellState(cell.GetNextCellState());
             if(cell.GetCellState() == 1)
                 tileMap.SetColor(cell.GetCellPosition(), OnColors[colorPos]);
             else
@@ -86,29 +92,23 @@ public class GameOfLife : MonoBehaviour
 
     private void PlayGameOfLife(Cell cell)
     {
-        if(NumberOfNeighersInStateOne(cell) == 3)
+        cell.SetNextCellState(0);
+        if (NumberOfNeighboursInStateOne(cell) == 3)
         {
-            cell.SetCellState(1);
-            //tileMap.SetColor(cell.GetCellPosition(), OnColors[colorPos]);
-
+            cell.SetNextCellState(1);
         }
-        else if(cell.GetCellState() == 1 && NumberOfNeighersInStateOne(cell) == 2)
+        else if(cell.GetCellState() == 1 && NumberOfNeighboursInStateOne(cell) == 2)
         {
-            return;
-        }
-        else
-        {
-            cell.SetCellState(0);
-            //tileMap.SetColor(cell.GetCellPosition(), OffColors[colorPos]);
+            cell.SetNextCellState(1);
         }
     }
 
     private int GetRandomStartValue()
     {
-        return UnityEngine.Random.Range(-40, 2);
+        return UnityEngine.Random.Range(-10, 2);
     }
 
-    private int NumberOfNeighersInStateOne(Cell cell)
+    private int NumberOfNeighboursInStateOne(Cell cell)
     {
         int count = 0;
         foreach (var n in cell.GetCellNeighbours())

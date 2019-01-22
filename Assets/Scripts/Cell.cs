@@ -6,7 +6,8 @@ using UnityEngine;
 
 public class Cell
 {
-    private int value;
+    private int currentValue;
+    private int nextValue;
     private Vector3Int[] neighbours;
     private Vector3Int cellPosition;
     private Vector2Int maxBounds, minBounds;
@@ -14,7 +15,7 @@ public class Cell
 
     public Cell(int val, Vector3Int cellPos, Vector2Int min, Vector2Int max)
     {
-        value = val;
+        currentValue = val;
         cellPosition = cellPos;
         minBounds = min;
         maxBounds = max;
@@ -54,12 +55,22 @@ public class Cell
 
     public void SetCellState(int val)
     {
-        value = val;
+        currentValue = val;
     }
-    
+
+    public void SetNextCellState(int val)
+    {
+        nextValue = val;
+    }
+
+    public int GetNextCellState()
+    {
+        return nextValue;
+    }
+
     public int GetCellState()
     {
-        return value;
+        return currentValue;
     }
 
     public Vector3Int GetCellPosition()
