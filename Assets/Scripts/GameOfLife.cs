@@ -11,8 +11,6 @@ public class GameOfLife : MonoBehaviour
 {
     public static bool startSim = false;
     [SerializeField]
-    private int gridSize = 8;
-    [SerializeField]
     private float timeStep = 2f;
     private float timer = 0;
     private Tilemap tileMap;
@@ -22,6 +20,7 @@ public class GameOfLife : MonoBehaviour
     public static Color[] OffColors = {Color.black, Color.red, Color.black, Color.black, Color.red};
     public static int colorPos;
     public static Vector2Int minBounds, maxBounds;
+    public static bool isStable;
 
     void Awake ()
     {
@@ -64,17 +63,19 @@ public class GameOfLife : MonoBehaviour
 	
 	void Update ()
     {
-        SetCellValuesFromColors();
         if (startSim)
         {
             timer += Time.deltaTime;
             if (timer >= timeStep)
             {
+                SetCellValuesFromColors();
                 foreach (var cell in cells)
                 {
                     PlayGameOfLife(cell);
                 }
+                isStable = HasStableState();
                 UpdateColors();
+                
                 timer = 0;
             }
         }
@@ -139,5 +140,15 @@ public class GameOfLife : MonoBehaviour
     private int GetRandomColorPair()
     {
         return UnityEngine.Random.Range(0, OffColors.Length);
+    }
+
+    private bool HasStableState()
+    {
+        foreach (var cell in cells)
+        {
+            if (cell.HasStateChange())
+                return false;
+        }
+        return true;
     }
 }

@@ -75,5 +75,10 @@ public class Cell
     {
         return cellPosition;
     }
+
+   public bool HasStateChange()
+    {
+        return currentValue != nextValue;
+    }
    
 }

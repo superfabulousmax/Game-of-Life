@@ -9,24 +9,34 @@ using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 
 public class InputController : MonoBehaviour
 {
     [SerializeField]
     private Tilemap tileMap;
+    [SerializeField]
+    private Text text;
     private WorldData worldData;
     private Color painterCol;
     const string folderName = "SavedWorlds";
     const string fileExtension = ".dat";
 
+
     private void Start()
     {
+        text.text = "";
+        text.color = GameOfLife.OnColors[GameOfLife.colorPos];
         worldData = new WorldData();
         painterCol = GameOfLife.OnColors[GameOfLife.colorPos];
     }
 
     void FixedUpdate ()
     {
+        if(GameOfLife.isStable && GameOfLife.startSim)
+        {
+            text.text = "Stable state has been reached.\nPress R to resim.";
+        }
         if(Input.GetKeyDown(KeyCode.R))
         {
             ReloadScene();
@@ -62,7 +72,7 @@ public class InputController : MonoBehaviour
             List<SerializableVector3Int> results = new List<SerializableVector3Int>();
             foreach (var position in tileMap.cellBounds.allPositionsWithin)
             {
-                if(tileMap.GetColor(position) == Color.black)
+                if(tileMap.GetColor(position) == GameOfLife.OnColors[GameOfLife.colorPos])
                 {
                     results.Add(position);
                 }
@@ -147,6 +157,8 @@ public class InputController : MonoBehaviour
     {
         Scene scene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(scene.name);
+        text.text = "";
         GameOfLife.startSim = false;
+        GameOfLife.isStable = false;
     }
 }
