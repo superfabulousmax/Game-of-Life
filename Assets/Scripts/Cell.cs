@@ -10,7 +10,7 @@ public class Cell
     private int nextValue;
     private Vector3Int[] neighbours;
     private Vector3Int cellPosition;
-    private int NUMBER_OF_NEIGHBOURS = 8;
+    private const int NUMBER_OF_NEIGHBOURS = 8;
 
     public Cell(int val, Vector3Int cellPos)
     {

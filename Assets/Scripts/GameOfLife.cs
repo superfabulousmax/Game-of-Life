@@ -23,7 +23,7 @@ public class GameOfLife : MonoBehaviour
     public static int colorPos;
     public static Vector2Int minBounds, maxBounds;
 
-    void Start ()
+    void Awake ()
     {
         tileMap = transform.GetComponentInParent<Tilemap>();
         cells = new List<Cell>();
@@ -77,9 +77,7 @@ public class GameOfLife : MonoBehaviour
                 UpdateColors();
                 timer = 0;
             }
-          
         }
-        
 	}
 
     private void SetCellValuesFromColors()

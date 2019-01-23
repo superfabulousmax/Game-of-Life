@@ -15,12 +15,14 @@ public class InputController : MonoBehaviour
     [SerializeField]
     private Tilemap tileMap;
     private WorldData worldData;
+    private Color painterCol;
     const string folderName = "SavedWorlds";
     const string fileExtension = ".dat";
 
     private void Start()
     {
         worldData = new WorldData();
+        painterCol = GameOfLife.OnColors[GameOfLife.colorPos];
     }
 
     void FixedUpdate ()
@@ -39,7 +41,7 @@ public class InputController : MonoBehaviour
             // get the collision point of the ray with the z = 0 plane
             Vector3 worldPoint = ray.GetPoint(-ray.origin.z / 1.0f * ray.direction.z);
             Vector3Int position = tileMap.WorldToCell(mousPos);
-            SetCellColour(position, GameOfLife.OnColors[GameOfLife.colorPos]);
+            SetCellColour(position, painterCol);
             //Debug.Log(string.Format("Co-ords of mouse is [X: {0} Y: {0}]", Input.mousePosition.x, Input.mousePosition.y));
             //Debug.Log(string.Format("Co-ords of CELL is [X: {0} Y: {0}]", position.x, position.y));
 
@@ -47,6 +49,13 @@ public class InputController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.C))
         {
             ClearWorld();
+        }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            if (painterCol == GameOfLife.OffColors[GameOfLife.colorPos])
+                painterCol = GameOfLife.OnColors[GameOfLife.colorPos];
+            else
+                painterCol = GameOfLife.OffColors[GameOfLife.colorPos];
         }
         if (Input.GetKeyDown(KeyCode.S))
         {
