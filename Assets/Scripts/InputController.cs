@@ -41,7 +41,7 @@ public class InputController : MonoBehaviour
             Vector3Int position = tileMap.WorldToCell(mousPos);
             SetCellColour(position, GameOfLife.OnColors[GameOfLife.colorPos]);
             //Debug.Log(string.Format("Co-ords of mouse is [X: {0} Y: {0}]", Input.mousePosition.x, Input.mousePosition.y));
-            Debug.Log(string.Format("Co-ords of CELL is [X: {0} Y: {0}]", position.x, position.y));
+            //Debug.Log(string.Format("Co-ords of CELL is [X: {0} Y: {0}]", position.x, position.y));
 
         }
         if (Input.GetKeyDown(KeyCode.C))

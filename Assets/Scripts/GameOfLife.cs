@@ -21,8 +21,9 @@ public class GameOfLife : MonoBehaviour
     public static Color[] OnColors = {Color.white, Color.green, Color.yellow, Color.cyan, Color.yellow};
     public static Color[] OffColors = {Color.black, Color.red, Color.black, Color.black, Color.red};
     public static int colorPos;
+    public static Vector2Int minBounds, maxBounds;
 
-	void Awake ()
+    void Start ()
     {
         tileMap = transform.GetComponentInParent<Tilemap>();
         cells = new List<Cell>();
@@ -52,17 +53,19 @@ public class GameOfLife : MonoBehaviour
                 {
                     value = 1;
                 }
-                Vector2Int minBounds = new Vector2Int(xMin, yMin);
-                Vector2Int maxBounds = new Vector2Int(xMax, yMax);
-                Cell c = new Cell(value, position, minBounds, maxBounds);
+                
+                Cell c = new Cell(value, position);
                 cells.Add(c);
             }
         }
+        minBounds = new Vector2Int(xMin, yMin);
+        maxBounds = new Vector2Int(xMax, yMax);
     }
 	
 	void Update ()
     {
-        if(startSim)
+        SetCellValuesFromColors();
+        if (startSim)
         {
             timer += Time.deltaTime;
             if (timer >= timeStep)
@@ -71,17 +74,31 @@ public class GameOfLife : MonoBehaviour
                 {
                     PlayGameOfLife(cell);
                 }
+                UpdateColors();
                 timer = 0;
             }
-            UpdateColors();
+          
         }
         
 	}
+
+    private void SetCellValuesFromColors()
+    {
+        foreach (var cell in cells)
+        {
+            cell.SetCellState(0);
+            if (tileMap.GetColor(cell.GetCellPosition()) == OnColors[colorPos])
+            {
+                cell.SetCellState(1);
+            }
+        }
+    }
 
     private void UpdateColors()
     {
         foreach (var cell in cells)
         {
+            tileMap.SetTileFlags(cell.GetCellPosition(), TileFlags.None);
             cell.SetCellState(cell.GetNextCellState());
             if(cell.GetCellState() == 1)
                 tileMap.SetColor(cell.GetCellPosition(), OnColors[colorPos]);

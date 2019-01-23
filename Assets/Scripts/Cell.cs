@@ -10,15 +10,13 @@ public class Cell
     private int nextValue;
     private Vector3Int[] neighbours;
     private Vector3Int cellPosition;
-    private Vector2Int maxBounds, minBounds;
     private int NUMBER_OF_NEIGHBOURS = 8;
 
-    public Cell(int val, Vector3Int cellPos, Vector2Int min, Vector2Int max)
+    public Cell(int val, Vector3Int cellPos)
     {
         currentValue = val;
+        nextValue = -1;
         cellPosition = cellPos;
-        minBounds = min;
-        maxBounds = max;
         neighbours = FindCellNeighbours();
     }
 
@@ -33,17 +31,17 @@ public class Cell
         neighbours[5] = new Vector3Int(cellPosition.x - 1, cellPosition.y + 1, cellPosition.z);
         neighbours[6] = new Vector3Int(cellPosition.x + 1, cellPosition.y + 1, cellPosition.z);
         neighbours[7] = new Vector3Int(cellPosition.x + 1, cellPosition.y - 1, cellPosition.z);
-        return CheckNeighbourBounds(neighbours);
+        return WrapNeighbourBounds(neighbours);
     }
     
-    private Vector3Int[] CheckNeighbourBounds(Vector3Int [] neighs)
+    private Vector3Int[] WrapNeighbourBounds(Vector3Int [] neighs)
     {
         for(int n = 0; n < NUMBER_OF_NEIGHBOURS; n++)
         {
-            if (neighs[n].x > maxBounds.x) neighs[n].x = minBounds.x;
-            if (neighs[n].x < minBounds.x) neighs[n].x = maxBounds.x;
-            if (neighs[n].y > maxBounds.y) neighs[n].y = minBounds.y;
-            if (neighs[n].y < minBounds.y) neighs[n].y = maxBounds.y;
+            if (neighs[n].x > GameOfLife.maxBounds.x) neighs[n].x = GameOfLife.minBounds.x;
+            if (neighs[n].x < GameOfLife.minBounds.x) neighs[n].x = GameOfLife.maxBounds.x;
+            if (neighs[n].y > GameOfLife.maxBounds.y) neighs[n].y = GameOfLife.minBounds.y;
+            if (neighs[n].y < GameOfLife.minBounds.y) neighs[n].y = GameOfLife.maxBounds.y;
         }
         return neighs;
     }
